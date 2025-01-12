@@ -60,6 +60,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Other Contributors:
 [KwazyMotoo](https://github.com/KwazyMotoo)
+<br>
 [NCCoder](https://github.com/NCCoder)
 
 ### Disclamer
