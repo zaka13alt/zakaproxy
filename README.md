@@ -29,9 +29,9 @@ So whenever you deploy this site, you don't HAVE to deploy it at root. Just drag
 
 To deploy this website locally, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/TheTIW/UV-Static`
-2. Navigate to the project directory: `cd UV-Static`
-3. Open the index.html file in a web browser (Cannot be run locally).
+1. Clone the repository: ```https://github.com/tf7software/UV-Static.git```
+3. Navigate to the project directory: `cd UV-Static`
+4. Open the index.html file in a web browser (Cannot be run locally).
 <br><br>
 
 ## Hosting
