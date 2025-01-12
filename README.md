@@ -17,8 +17,8 @@ Modified Version of the <a href="https://github.com/titaniumnetwork-dev/Ultravio
 
 ## Features
 
-- Search the web using the FIRST static proxy.
-- Access to any website
+- Search the web using a static proxy.
+- Access to most websites
 - Deployable on any static hosting platform
 <br><br>
 
