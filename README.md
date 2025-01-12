@@ -22,6 +22,9 @@ Modified Version of the <a href="https://github.com/titaniumnetwork-dev/Ultravio
 - Deployable on any static hosting platform
 <br><br>
 
+## Why do you redirect to /active?
+So whenever you deploy this site, you don't HAVE to deploy it at root. Just drag and drop the ```active``` folder into the root of your main website, and your good to go!
+
 ## Deployment
 
 To deploy this website locally, follow these steps:
