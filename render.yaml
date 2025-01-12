@@ -1,0 +1,6 @@
+services:
+  - name: uv-static
+    type: static_site
+    env: static
+    publish_path: ./
+    branch: main
