@@ -1,9 +1,18 @@
-# TIW Static UV
+# tf7software UV-Static
+### This is the upkept version of UV-Static, originally by [titaniumnetwork](https://github.com/titaniumnetwork-dev/Ultraviolet), and made static by [TIW](https://github.com/TheTIW/UV-Static)
+
+[![Join Our Discord](https://img.shields.io/badge/Join%20Our-Discord-purple)](https://discord.gg/Ex2nZUWuHF) [![maintenance-status](https://img.shields.io/badge/maintenance-actively--developed-brightgreen.svg)](https://github.com/tf7software/UV-Static/commits/main/)
+
+
+
+
+
+[TIW Discord](https://discord.com/invite/XctyeqGGt4)
+
 
 Modified Version of the <a href="https://github.com/titaniumnetwork-dev/Ultraviolet-App" target="blank">Ultraviolet</a> backend. This modification changes the proxy **CONFIG**, making it work on static pages. 
-<br> <strong> Our Developers That Worked on This Project: </strong>
-NC Gaming#0058 and kwazeh  <center> Join our discord <a href="https://discord.com/invite/XctyeqGGt4" target="_blank" style="text-decoration:none;"> here </a><br>
-<a> <img src="static/logo.gif" style="width:25%; align-self:center;"> </img> </a> 
+
+
 </center> <br>
 
 ## Features
