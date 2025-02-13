@@ -31,7 +31,7 @@ To deploy this website locally, follow these steps:
 
 1. Clone the repository: ```https://github.com/tf7software/UV-Static.git```
 3. Navigate to the project directory: `cd UV-Static`
-4. Run `index.html`, ```python3 -m http.server 3000```, or your server of choice.
+4. Run `index.html` using ```python3 -m http.server 3000``` or your server of choice.
 5. Navigate to [localhost with port 3000](http://localhost:3000/)
 <br><br>
 
