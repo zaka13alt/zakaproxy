@@ -1,3 +1,5 @@
+# This is deprecated. It is unsecure and blockable through http. Please use [UV-Static v2](https://github.com/rhenryw/UV-Static-2.0) for new projects
+
 # tf7software UV-Static
 ### This is the upkept version of UV-Static, originally by [titaniumnetwork](https://github.com/titaniumnetwork-dev/Ultraviolet), and made static by [TIW](https://github.com/TheTIW/UV-Static)
 
