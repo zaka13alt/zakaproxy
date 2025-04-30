@@ -3,7 +3,7 @@
 # tf7software UV-Static
 ### This is the upkept version of UV-Static, originally by [titaniumnetwork](https://github.com/titaniumnetwork-dev/Ultraviolet), and made static by [TIW](https://github.com/TheTIW/UV-Static)
 
-[![Join Our Discord](https://img.shields.io/badge/Join%20Our-Discord-purple)](https://discord.gg/Ex2nZUWuHF) [![maintenance-status](https://img.shields.io/badge/maintenance-actively--developed-brightgreen.svg)](https://github.com/tf7software/UV-Static/commits/main/)
+[![Join Our Discord](https://img.shields.io/badge/Join%20Our-Discord-purple)](https://discord.gg/redlv) [![maintenance-status](https://img.shields.io/badge/maintenance-as--is-yellow.svg)](https://github.com/tf7software/UV-Static/commits/main/)
 
 
 
