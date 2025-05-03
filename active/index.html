@@ -14,6 +14,15 @@
       <link rel="stylesheet" href="../assets/font-awesome/css/all.css">
       <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
       <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+       <script>
+         window.onload = function () {
+           if (!localStorage.getItem("discordAlertShown")) {
+             alert("Please upgrade to UV v2 (rhenryw/UV-Static-2.0). Join our discord .gg/redlv for bonuses, updates, links, and more! ");
+             localStorage.setItem("discordAlertShown", "true");
+           }
+         };
+       </script>
+
    </head>
    <body>
       
