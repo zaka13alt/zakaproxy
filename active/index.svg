@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+        <style>
+            /* Your exact styles are preserved */
+            .top-bar { display: flex; justify-content: flex-end; align-items: center; padding: 10px 20px; gap: 20px; background: rgba(0, 0, 0, 0.2); }
+            .nav-icon { cursor: pointer; height: 32px; width: 32px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+            .nav-icon:hover { transform: scale(1.1); }
+            .nav-icon img { width: 100%; height: 100%; }
+            .nav-icon i { font-size: 28px; color: #fff; }
+            #settings-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; justify-content: center; align-items: center; color: #fff; }
+            
+            /* General setup */
+            foreignObject { width: 100%; height: 100%; }
+            body { margin: 0; font-family: 'Open Sans', sans-serif; background: #1a1a1a; color: #fff; }
+        </style>
+    </defs>
+    <foreignObject x="0" y="0" width="100" height="100">
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <base href="./"/> 
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+                <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+                <link rel="stylesheet" href="index.css"/>
+                <link rel="icon" type="image/x-icon" href="logo.png"/>
+                <link rel="shortcut icon" type="image/jpg" href="logoo.png"/>
+                <link href="https://googleapis.com" rel="stylesheet"/>
+                <link href="https://googleapis.com" rel="stylesheet"/>
+            </head>
+            <body>
+                <!-- Navigation Bar -->
+                <div class="top-bar">
+                    <div class="nav-icon" onclick="$('#settings-overlay').css('display', 'flex');">
+                        <i class="fa-solid fa-gear"></i>
+                    </div>
+                </div>
+
+                <!-- Main Content & URL Input -->
+                <div class="main-container" style="padding: 50px; text-align: center;">
+                    <h1>Ultraviolet Web Proxy</h1>
+                    <form id="uv-form">
+                        <input id="uv-address" type="text" placeholder="Search or type URL" style="padding: 10px; width: 300px; border-radius: 5px; color: #000;" />
+                        <button type="submit" style="padding: 10px; border-radius: 5px;">Go</button>
+                    </form>
+                </div>
+
+                <!-- Hidden Settings Modal -->
+                <div id="settings-overlay">
+                    <div class="modal-content" style="background: #333; padding: 20px; border-radius: 8px;">
+                        <h2>Settings</h2>
+                        <p>Configure your proxy settings here.</p>
+                        <button onclick="$('#settings-overlay').hide();">Close</button>
+                    </div>
+                </div>
+
+                <!-- UV and Script Dependencies -->
+                <script src="uv/uv.bundle.js"></script>
+                <script src="uv/uv.config.js"></script>
+                <script src="register-sw.js"></script>
+                <script src="search.js"></script>
+                <script src="index.js"></script>
+
+                <script>
+                    // Dynamically set base path so CDN assets load correctly 
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const baseTag = document.createElement('base');
+                        baseTag.href = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/';
+                        document.head.prepend(baseTag);
+                    });
+                </script>
+            </body>
+        </html>
+    </foreignObject>
+</svg>
