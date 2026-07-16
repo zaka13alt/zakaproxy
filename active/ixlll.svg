@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         
         <!-- Base tag to prevent CDN issues -->
-        <base href="./" />
+
 
         <title>Ultraviolet Web Proxy</title>
 
@@ -66,8 +66,8 @@
         
         <!-- UV Bundle Configuration -->
         <!-- Replace './uv/uv.config.js' with your actual uv config path if necessary -->
-        <script src="/uv/uv.config.js"></script> 
-        <script src="/uv/uv.bundle.js"></script>
+        <script src="uv/uv.config.js"></script> 
+        <script src="uv/uv.bundle.js"></script>
 
         <!-- Register SW -->
         <script>
