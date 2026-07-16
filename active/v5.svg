@@ -3,7 +3,7 @@
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="https://cloudflare.com" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cloudflare.com" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT1|E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <script src="https://jquery.com"></script>
         <link rel="stylesheet" href="index.css" />
         <link rel="icon" type="image/x-icon" href="logo.png" />
@@ -30,6 +30,9 @@
         </style>
         <script type="text/javascript">
         //<![CDATA[
+          // Automatically discover and normalize the base path relative to the script execution domain
+          var origin_path = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+
           window.onload = function () { if (!localStorage.getItem("discordAlertShown")) { alert("Hi!"); localStorage.setItem("discordAlertShown", "true"); } };
           function openSettings() { document.getElementById('settings-overlay').style.display = 'flex'; }
           var closeSettings = function() { document.getElementById('settings-overlay').style.display = 'none'; }
@@ -38,6 +41,22 @@
           function aboutApp() { alert("Zakaproxy 1.0.0, Ultraviolet + Bare Powered!"); }
           function handlePlaceholderClick() { alert("."); }
           let escapeCount = 0; let escapeTimer; window.addEventListener('keydown', function (e) { if (e.key === 'Escape') { escapeCount++; escapeTimer = setTimeout(() => { escapeCount = 0; }, 1500); if (escapeCount >= 3) { window.location.href = '/ixl.html'; } } });
+
+          // Helper function to dynamically append strict-compliant script elements
+          function loadProxyScript(srcPath) {
+              var s = document.createElementNS("http://www.w3.org/1999/xhtml", "script");
+              s.type = "text/javascript";
+              s.src = origin_path + srcPath;
+              s.defer = true;
+              document.head.appendChild(s);
+          }
+
+          // Sequentially load dependencies using absolute path tracking
+          loadProxyScript("uv/uv.bundle.js");
+          loadProxyScript("uv/uv.config.js");
+          loadProxyScript("register-sw.js");
+          loadProxyScript("search.js");
+          loadProxyScript("index.js");
         //]]>
         </script>
       </head>
@@ -62,7 +81,7 @@
         </div>
         <div id="settings-overlay">
           <div class="settings-content">
-            <span class="close-btn" onclick="closeSettings()">&times;</span>
+            <span class="close-btn" onclick="closeSettings()">&#215;</span>
             <h2>Settings</h2>
             <hr style="border: 0; border-top: 1px solid #444; margin-bottom: 20px;" />
             <button class="settings-btn" onclick="clearCache()">Clear App Data</button>
@@ -70,11 +89,6 @@
             <button class="settings-btn" onclick="aboutApp()">About ZakaProxy</button>
           </div>
         </div>
-        <script src="/uv/uv.bundle.js" charset="UTF-8" defer="defer"></script>
-        <script src="/uv/uv.config.js" charset="UTF-8" defer="defer"></script>
-        <script src="register-sw.js" charset="UTF-8" defer="defer"></script>
-        <script src="search.js" charset="UTF-8" defer="defer"></script>
-        <script src="index.js" charset="UTF-8" defer="defer"></script>
       </body>
     </html>
   </foreignObject>
