@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1920 1080">
+<svg xmlns="http://w3.org" width="100%" height="100%" viewBox="0 0 1920 1080">
   <foreignObject width="100%" height="100%">
-    <html xmlns="http://www.w3.org/1999/xhtml">
+    <html xmlns="http://w3.org">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="https://cloudflare.com" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT|E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -42,19 +42,27 @@
           function handlePlaceholderClick() { alert("."); }
           let escapeCount = 0; let escapeTimer; window.addEventListener('keydown', function (e) { if (e.key === 'Escape') { escapeCount++; escapeTimer = setTimeout(() => { escapeCount = 0; }, 1500); if (escapeCount >= 3) { window.location.href = '/ixl.html'; } } });
 
-          // Intercept registration calls and append the precise base origin path
+          // Intercept registration calls and rewrite paths to obey maximum directory scope rules
           if ('serviceWorker' in navigator) {
               var nativeRegister = navigator.serviceWorker.register;
               navigator.serviceWorker.register = function(scriptUrl, options) {
-                  // If the proxy scripts look for sw configuration targets
+                  // Resolve path to make sure we map back into jsDelivr
                   if (!scriptUrl.startsWith('http') && !scriptUrl.startsWith('//')) {
-                      // Normalize pathing to point directly into the exact uv asset pool
-                      if (scriptUrl.includes('uv-sw.js')) {
-                          scriptUrl = origin_path + 'uv/uv-sw.js';
+                      if (scriptUrl.includes('uv.sw.js')) {
+                          scriptUrl = origin_path + 'uv/uv.sw.js';
                       } else if (!scriptUrl.includes('/') && scriptUrl.endsWith('.js')) {
                           scriptUrl = origin_path + scriptUrl;
                       }
                   }
+                  
+                  // Dynamically restrict scope parameter to match worker directory depth limits
+                  if (options && options.scope) {
+                      var absoluteScript = new URL(scriptUrl, window.location.href).pathname;
+                      var scriptDir = absoluteScript.substring(0, absoluteScript.lastIndexOf('/') + 1);
+                      options.scope = scriptDir + 'go/';
+                      console.log("Forced scope matching containment rule: " + options.scope);
+                  }
+                  
                   return nativeRegister.call(navigator.serviceWorker, scriptUrl, options);
               };
           }
@@ -70,14 +78,30 @@
           function loadNextScript(index) {
               if (index >= scriptsToLoad.length) return;
               
-              var s = document.createElementNS("http://www.w3.org/1999/xhtml", "script");
+              var s = document.createElementNS("http://w3.org", "script");
               s.type = "text/javascript";
               s.src = origin_path + scriptsToLoad[index];
               s.setAttribute("defer", "defer");
               
               s.onload = function() {
+                  // INTERCEPTPOINT: Right after uv.config.js loads, adjust its internal rules 
+                  // to keep configuration state uniform with directory limits
+                  if (scriptsToLoad[index] === "uv/uv.config.js" && window.__uv$config) {
+                      var absoluteRoot = new URL(origin_path, window.location.href).pathname;
+                      var uvDirectory = absoluteRoot + 'uv/';
+                      
+                      // Rewrite path fields to live completely within scope boundaries
+                      window.__uv$config.prefix = uvDirectory + 'go/';
+                      window.__uv$config.handler = uvDirectory + 'uv.handler.js';
+                      window.__uv$config.bundle = uvDirectory + 'uv.bundle.js';
+                      window.__uv$config.config = uvDirectory + 'uv.config.js';
+                      window.__uv$config.sw = uvDirectory + 'uv.sw.js';
+                      
+                      console.log("Successfully aligned inline configuration object fields.");
+                  }
                   loadNextScript(index + 1);
               };
+              
               s.onerror = function() {
                   console.error("Failed to load dependency: " + scriptsToLoad[index]);
                   loadNextScript(index + 1);
