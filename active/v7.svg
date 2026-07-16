@@ -41,22 +41,37 @@
           function handlePlaceholderClick() { alert("."); }
           let escapeCount = 0; let escapeTimer; window.addEventListener('keydown', function (e) { if (e.key === 'Escape') { escapeCount++; escapeTimer = setTimeout(() => { escapeCount = 0; }, 1500); if (escapeCount >= 3) { window.location.href = '/ixl.html'; } } });
 
-          function loadProxyScript(srcPath) {
+          // Array of scripts to load sequentially
+          var scriptsToLoad = [
+              "uv/uv.bundle.js",
+              "uv/uv.config.js",
+              "register-sw.js",
+              "search.js",
+              "index.js"
+          ];
+
+          function loadNextScript(index) {
+              if (index >= scriptsToLoad.length) return;
+              
               var s = document.createElementNS("http://www.w3.org/1999/xhtml", "script");
               s.type = "text/javascript";
-              s.src = origin_path + srcPath;
-              // Strict XHTML boolean mapping
+              s.src = origin_path + scriptsToLoad[index];
               s.setAttribute("defer", "defer");
-              // Safely target documentElement to avoid early head structural races
+              
+              // Key change: Wait completely for this script to ready up before adding the next one
+              s.onload = function() {
+                  loadNextScript(index + 1);
+              };
+              s.onerror = function() {
+                  console.error("Failed to load dependency: " + scriptsToLoad[index]);
+                  loadNextScript(index + 1); // fallback attempt to process rest of stack
+              };
+              
               document.documentElement.appendChild(s);
           }
 
-          // Trigger pipeline instantiation immediately
-          loadProxyScript("uv/uv.bundle.js");
-          loadProxyScript("uv/uv.config.js");
-          loadProxyScript("register-sw.js");
-          loadProxyScript("search.js");
-          loadProxyScript("index.js");
+          // Start the sequential bootloader sequence
+          loadNextScript(0);
         //]]>
         </script>
       </head>
