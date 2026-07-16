@@ -30,7 +30,6 @@
         </style>
         <script type="text/javascript">
         //<![CDATA[
-          // Discovers baseline runtime path from the window context
           var origin_path = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 
           window.onload = function () { if (!localStorage.getItem("discordAlertShown")) { alert("Hi!"); localStorage.setItem("discordAlertShown", "true"); } };
@@ -42,13 +41,34 @@
           function handlePlaceholderClick() { alert("."); }
           let escapeCount = 0; let escapeTimer; window.addEventListener('keydown', function (e) { if (e.key === 'Escape') { escapeCount++; escapeTimer = setTimeout(() => { escapeCount = 0; }, 1500); if (escapeCount >= 3) { window.location.href = '/ixl.html'; } } });
 
-          // Intercept registration calls and append the precise base origin path
+          // Hard intercept for XHTML form submission to kill standard navigation refreshes
+          function handleUvSubmit(e) {
+              e.preventDefault();
+              console.log("Form submit intercepted inside SVG container context.");
+              
+              // Fallback routing if index.js listener execution state dropped out
+              if (window.Ultraviolet && window.__uv$config) {
+                  var address = document.getElementById('uv-address').value;
+                  var engine = document.getElementById('uv-search-engine').value;
+                  
+                  // Simple validation / search conversion matching standard index.js rules
+                  var url = address.trim();
+                  if (!url.includes('.') || url.includes(' ')) {
+                      url = engine.replace('%s', encodeURIComponent(url));
+                  } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                      url = 'https://' + url;
+                  }
+                  
+                  // Encode path via configured Ultraviolet codec structure
+                  var proxyUrl = window.__uv$config.prefix + window.__uv$config.encodeUrl(url);
+                  window.location.href = proxyUrl;
+              }
+          }
+
           if ('serviceWorker' in navigator) {
               var nativeRegister = navigator.serviceWorker.register;
               navigator.serviceWorker.register = function(scriptUrl, options) {
-                  // Normalize relative script paths to cleanly point to full absolute CDN urls
                   if (!scriptUrl.startsWith('http') && !scriptUrl.startsWith('//')) {
-                      // Check your updated uv.config.js property value dynamically
                       if (window.__uv$config && window.__uv$config.sw && scriptUrl.includes('uv.sw.js')) {
                           scriptUrl = origin_path + '../uv.sw.js'; 
                       } else if (!scriptUrl.includes('/') && scriptUrl.endsWith('.js')) {
@@ -70,7 +90,7 @@
           function loadNextScript(index) {
               if (index >= scriptsToLoad.length) return;
               
-              var s = document.createElementNS("http://ww.w3.org/1999/xhtml", "script");
+              var s = document.createElementNS("http://www.w3.org/1999/xhtml", "script");
               s.type = "text/javascript";
               s.src = origin_path + scriptsToLoad[index];
               s.setAttribute("defer", "defer");
@@ -100,7 +120,8 @@
           </div>
         </div>
         <div id="content">
-          <form id="uv-form">
+          <!-- Added strict onsubmit hook to forcefully kill natural page refresh loops -->
+          <form id="uv-form" onsubmit="handleUvSubmit(event)">
             <input id="uv-search-engine" value="https://google.com" type="hidden" />
             <input id="uv-address" type="text" placeholder="Search Google or type an URL" class="form__input" />
           </form>
@@ -115,7 +136,7 @@
             <h2>Settings</h2>
             <hr style="border: 0; border-top: 1px solid #444; margin-bottom: 20px;" />
             <button class="settings-btn" onclick="clearCache()">Clear App Data</button>
-            <button class="settings-btn" onclick="unregisterServiceWorkers()">Unregister Service Workers</button>
+            <button class="settings-btn" onclick="registerServiceWorkers()">Unregister Service Workers</button>
             <button class="settings-btn" onclick="aboutApp()">About ZakaProxy</button>
           </div>
         </div>
