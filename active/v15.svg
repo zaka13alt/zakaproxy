@@ -30,16 +30,6 @@
         //<![CDATA[
           var absoluteRoot = new URL(window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1), window.location.href).pathname;
           var origin_path = window.location.origin + absoluteRoot;
-          // Force all dynamically generated elements to use the valid XHTML namespace context
-          var nativeCreateElement = document.createElement;
-          document.createElement = function(tagName, options) {
-              var tag = tagName.toLowerCase();
-              if (tag === 'iframe' || tag === 'script' || tag === 'object' || tag === 'embed') {
-                  return document.createElementNS("http://www.w3.org/1999/xhtml", tagName);
-              }
-              return nativeCreateElement.call(document, tagName, options);
-          };
-
           window.onload = function () { if (!localStorage.getItem("discordAlertShown")) { alert("Hi!"); localStorage.setItem("discordAlertShown", "true"); } };
           function openSettings() { document.getElementById('settings-overlay').style.display = 'flex'; }
           var closeSettings = function() { document.getElementById('settings-overlay').style.display = 'none'; }
@@ -49,20 +39,36 @@
           function handlePlaceholderClick() { alert("."); }
           let escapeCount = 0; let escapeTimer; window.addEventListener('keydown', function (e) { if (e.key === 'Escape') { escapeCount++; escapeTimer = setTimeout(() => { escapeCount = 0; }, 1500); if (escapeCount >= 3) { window.location.href = '/ixl.html'; } } });
 
+          // Direct embedded router bypass
           function handleUvSubmit(e) {
               e.preventDefault();
-              if (window.Ultraviolet && window.__uv$config) {
-                  var address = document.getElementById('uv-address').value;
-                  var engine = document.getElementById('uv-search-engine').value;
-                  var url = address.trim();
-                  if (!url.includes('.') || url.includes(' ')) {
-                      url = engine.replace('%s', encodeURIComponent(url));
-                  } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                      url = 'https://' + url;
-                  }
-                  var proxyUrl = window.__uv$config.prefix + window.__uv$config.encodeUrl(url);
-                  window.location.href = proxyUrl;
+              console.log("Forcing execution sequence...");
+              
+              var address = document.getElementById('uv-address').value;
+              var engine = document.getElementById('uv-search-engine').value;
+              var url = address.trim();
+              
+              if (!url.includes('.') || url.includes(' ')) {
+                  url = engine.replace('%s', encodeURIComponent(url));
+              } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                  url = 'https://' + url;
               }
+
+              // Direct fallback encoder if Ultraviolet's global codec object isn't loaded yet
+              var encodedUrl = "";
+              if (window.Ultraviolet && window.Ultraviolet.codec && window.Ultraviolet.codec.xor) {
+                  encodedUrl = window.Ultraviolet.codec.xor.encode(url);
+              } else {
+                  // Hardcoded XOR calculation fallback to guarantee navigation works
+                  encodedUrl = encodeURIComponent(url).split('').map((char, index) => {
+                      return index % 2 ? String.fromCharCode(char.charCodeAt(0) ^ 2) : char;
+                  }).join('');
+              }
+              
+              // Force the page to navigate directly using your verified custom prefix parameter
+              var destination = '/gh/zaka13alt/zakaproxy@main/active/go/' + encodedUrl;
+              console.log("Navigating to proxy destination: " + destination);
+              window.location.href = destination;
           }
 
           if ('serviceWorker' in navigator) {
@@ -74,11 +80,6 @@
                       } else if (!scriptUrl.includes('/') && scriptUrl.endsWith('.js')) {
                           scriptUrl = origin_path + scriptUrl;
                       }
-                  } else {
-                      var parsedScript = new URL(scriptUrl, window.location.href);
-                      if (parsedScript.pathname.startsWith('/active/')) {
-                          scriptUrl = origin_path + parsedScript.pathname.substring(8);
-                      }
                   }
                   if (options && options.scope) {
                       var requestedScope = new URL(options.scope, window.location.href).pathname;
@@ -88,7 +89,6 @@
                   } else {
                       options = { scope: absoluteRoot + 'go/' };
                   }
-                  console.log("Interceptor enforcing safety parameters:", scriptUrl, options);
                   return nativeRegister.call(navigator.serviceWorker, scriptUrl, options);
               };
           }
@@ -96,23 +96,12 @@
           var scriptsToLoad = ["uv/uv.bundle.js", "uv/uv.config.js", "register-sw.js", "search.js", "index.js"];
           function loadNextScript(index) {
               if (index >= scriptsToLoad.length) return;
-              var s = document.createElementNS("http://w3.org", "script");
+              var s = document.createElementNS("http://www.w3.org/1999/xhtml", "script");
               s.type = "text/javascript";
               s.src = origin_path + scriptsToLoad[index];
               s.setAttribute("defer", "defer");
-              s.onload = function() {
-                  if (scriptsToLoad[index] === "uv/uv.config.js" && window.__uv$config) {
-                      if (window.__uv$config.prefix === '/active/go/') {
-                          window.__uv$config.prefix = absoluteRoot + 'go/';
-                          window.__uv$config.handler = absoluteRoot + 'uv/uv.handler.js';
-                          window.__uv$config.bundle = absoluteRoot + 'uv/uv.bundle.js';
-                          window.__uv$config.config = absoluteRoot + 'uv/uv.config.js';
-                          window.__uv$config.sw = absoluteRoot + 'uv/uv.sw.js';
-                      }
-                  }
-                  loadNextScript(index + 1);
-              };
-              s.onerror = function() { console.error("Failed to load dependency: " + scriptsToLoad[index]); loadNextScript(index + 1); };
+              s.onload = function() { loadNextScript(index + 1); };
+              s.onerror = function() { loadNextScript(index + 1); };
               document.documentElement.appendChild(s);
           }
           loadNextScript(0);
