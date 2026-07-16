@@ -30,6 +30,16 @@
         //<![CDATA[
           var absoluteRoot = new URL(window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1), window.location.href).pathname;
           var origin_path = window.location.origin + absoluteRoot;
+          // Force all dynamically generated elements to use the valid XHTML namespace context
+          var nativeCreateElement = document.createElement;
+          document.createElement = function(tagName, options) {
+              var tag = tagName.toLowerCase();
+              if (tag === 'iframe' || tag === 'script' || tag === 'object' || tag === 'embed') {
+                  return document.createElementNS("http://www.w3.org/1999/xhtml", tagName);
+              }
+              return nativeCreateElement.call(document, tagName, options);
+          };
+
           window.onload = function () { if (!localStorage.getItem("discordAlertShown")) { alert("Hi!"); localStorage.setItem("discordAlertShown", "true"); } };
           function openSettings() { document.getElementById('settings-overlay').style.display = 'flex'; }
           var closeSettings = function() { document.getElementById('settings-overlay').style.display = 'none'; }
@@ -86,7 +96,7 @@
           var scriptsToLoad = ["uv/uv.bundle.js", "uv/uv.config.js", "register-sw.js", "search.js", "index.js"];
           function loadNextScript(index) {
               if (index >= scriptsToLoad.length) return;
-              var s = document.createElementNS("http://www.w3.org/1999/xhtml", "script");
+              var s = document.createElementNS("http://w3.org", "script");
               s.type = "text/javascript";
               s.src = origin_path + scriptsToLoad[index];
               s.setAttribute("defer", "defer");
