@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+  <foreignObject width="100%" height="100%">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        <!-- Base tag to prevent CDN issues -->
+        <base href="./" />
+
+        <title>Ultraviolet Web Proxy</title>
+
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link href="https://googleapis.com" rel="stylesheet" />
+        <link href="https://googleapis.com" rel="stylesheet" />
+
+        <style>
+          body { margin: 0; font-family: 'Open Sans', sans-serif; background: #121212; color: #fff; display: flex; flex-direction: column; min-height: 100vh; }
+          .top-bar { display: flex; justify-content: flex-end; align-items: center; padding: 10px 20px; gap: 20px; background: rgba(0, 0, 0, 0.4); }
+          .nav-icon { cursor: pointer; height: 32px; width: 32px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+          .nav-icon:hover { transform: scale(1.1); }
+          .nav-icon i { font-size: 28px; color: #fff; }
+          
+          .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+          h1 { font-family: 'Oswald', sans-serif; font-size: 3rem; margin-bottom: 20px; }
+          .url-form { width: 100%; max-width: 600px; display: flex; gap: 10px; }
+          .url-input { flex: 1; padding: 15px; border-radius: 5px; border: none; background: rgba(255, 255, 255, 0.1); color: #fff; font-size: 1rem; }
+          .go-btn { padding: 15px 30px; border-radius: 5px; border: none; background: #00bcd4; color: #fff; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+          .go-btn:hover { background: #008394; }
+
+          #settings-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
+          .modal-content { background: #1e1e1e; padding: 30px; border-radius: 8px; width: 90%; max-width: 500px; text-align: center; }
+          .close-btn { margin-top: 20px; padding: 10px 20px; background: #ff5252; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        </style>
+      </head>
+      <body>
+
+        <!-- Top Navigation -->
+        <div class="top-bar">
+          <div class="nav-icon" onclick="document.getElementById('settings-overlay').style.display='flex'">
+            <i class="fas fa-cog"></i>
+          </div>
+        </div>
+
+        <!-- Main UI -->
+        <div class="main-content">
+          <h1>Ultraviolet Portal</h1>
+          <form class="url-form" id="uv-form">
+            <input type="text" class="url-input" id="uv-address" placeholder="Search or type URL" autocomplete="off" />
+            <button type="submit" class="go-btn">Go</button>
+          </form>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-overlay">
+          <div class="modal-content">
+            <h2>Settings</h2>
+            <p>Configure your proxy settings here.</p>
+            <button class="close-btn" onclick="document.getElementById('settings-overlay').style.display='none'">Close</button>
+          </div>
+        </div>
+
+        <!-- Ultraviolet Scripts -->
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        
+        <!-- UV Bundle Configuration -->
+        <!-- Replace './uv/uv.config.js' with your actual uv config path if necessary -->
+        <script src="/uv/uv.config.js"></script> 
+        <script src="/uv/uv.bundle.js"></script>
+
+        <!-- Register SW -->
+        <script>
+          if ('serviceWorker' in navigator) {
+              window.addEventListener('load', () => {
+                  navigator.serviceWorker.register('/uv/sw.js', {
+                      scope: __uv$config.prefix
+                  }).then((registration) => {
+                      console.log('UV Service Worker registration successful:', registration.scope);
+                  }).catch((err) => {
+                      console.log('UV Service Worker registration failed:', err);
+                  });
+              });
+          }
+        </script>
+
+        <!-- Search / UV Navigation -->
+        <script>
+          const form = document.getElementById('uv-form');
+          const address = document.getElementById('uv-address');
+
+          form.addEventListener('submit', async (event) => {
+              event.preventDefault();
+
+              try {
+                  // Ensure UV Config exists
+                  if (!window.__uv$config) {
+                      throw new Error('Ultraviolet config is not loaded.');
+                  }
+
+                  let url = address.value.trim();
+                  if (!isUrl(url)) {
+                      url = 'https://google.com' + encodeURIComponent(url);
+                  } else if (!(url.startsWith('https://') || url.startsWith('http://'))) {
+                      url = 'https://' + url;
+                  }
+
+                  // Bypass CDN path by appending to UV prefix
+                  window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+              } catch (err) {
+                  console.error(err);
+                  alert(err.message);
+              }
+          });
+
+          function isUrl(val = '') {
+              if (/^http(s):\/\//.test(val)) return true;
+              return /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,11}/.test(val);
+          }
+        </script>
+
+      </body>
+    </html>
+  </foreignObject>
+</svg>
