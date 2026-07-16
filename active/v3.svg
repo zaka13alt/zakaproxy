@@ -62,7 +62,7 @@
         </div>
         <div id="settings-overlay">
           <div class="settings-content">
-            <span class="close-btn" onclick="closeSettings()">&times;</span>
+            <span class="close-btn" onclick="closeSettings()">&#215;</span>
             <h2>Settings</h2>
             <hr style="border: 0; border-top: 1px solid #444; margin-bottom: 20px;" />
             <button class="settings-btn" onclick="clearCache()">Clear App Data</button>
