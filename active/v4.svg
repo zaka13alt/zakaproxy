@@ -3,8 +3,8 @@
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <link rel="stylesheet" href="https://cloudflare.com" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <script src="https://jquery.com"></script>
         <link rel="stylesheet" href="index.css" />
         <link rel="icon" type="image/x-icon" href="logo.png" />
         <link rel="shortcut icon" type="image/jpg" href="logoo.png" />
@@ -52,7 +52,7 @@
         </div>
         <div id="content">
           <form id="uv-form">
-            <input id="uv-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
+            <input id="uv-search-engine" value="https://google.com" type="hidden" />
             <input id="uv-address" type="text" placeholder="Search Google or type an URL" class="form__input" />
           </form>
           <div class="desc left-margin">
@@ -62,7 +62,7 @@
         </div>
         <div id="settings-overlay">
           <div class="settings-content">
-            <span class="close-btn" onclick="closeSettings()">&#215;</span>
+            <span class="close-btn" onclick="closeSettings()">&times;</span>
             <h2>Settings</h2>
             <hr style="border: 0; border-top: 1px solid #444; margin-bottom: 20px;" />
             <button class="settings-btn" onclick="clearCache()">Clear App Data</button>
@@ -70,11 +70,11 @@
             <button class="settings-btn" onclick="aboutApp()">About ZakaProxy</button>
           </div>
         </div>
-        <script src="uv/uv.bundle.js" charset="UTF-8" defer="defer"></script>
-        <script src="uv/uv.config.js" charset="UTF-8" defer="defer"></script>
-        <script src="register-sw.js" charset="UTF-8" defer></script>
-        <script src="search.js" charset="UTF-8" defer></script>
-        <script src="index.js" charset="UTF-8" defer></script>
+        <script src="/uv/uv.bundle.js" charset="UTF-8" defer="defer"></script>
+        <script src="/uv/uv.config.js" charset="UTF-8" defer="defer"></script>
+        <script src="register-sw.js" charset="UTF-8" defer="defer"></script>
+        <script src="search.js" charset="UTF-8" defer="defer"></script>
+        <script src="index.js" charset="UTF-8" defer="defer"></script>
       </body>
     </html>
   </foreignObject>
